@@ -1,4 +1,3 @@
-
 """
 Autoresearch pretraining script. Single-GPU, single-file.
 Cherry-picked and simplified from nanochat.
@@ -431,7 +430,7 @@ class MuonAdamW(torch.optim.Optimizer):
 # ---------------------------------------------------------------------------
 
 # Model architecture
-ASPECT_RATIO = 64       # model_dim = depth * ASPECT_RATIO (increased from 56 for more model capacity)
+ASPECT_RATIO = 72       # model_dim = depth * ASPECT_RATIO (increased from 64 for more model capacity)
 HEAD_DIM = 128          # target head dimension for attention
 WINDOW_PATTERN = "SSLL" # sliding window pattern: L=full, S=half context
 
