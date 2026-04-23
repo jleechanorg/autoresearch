@@ -430,7 +430,7 @@ WINDOW_PATTERN = "SSSL"   # alternating sliding window pattern: L=full, S=half c
 
 # Optimization
 TOTAL_BATCH_SIZE = 2**18 # reduced to fit 24GB GPU (was 2**19)
-EMBEDDING_LR = 0.5       # reduced from 0.6 for better convergence
+EMBEDDING_LR = 0.6       # increased from 0.5 for better convergence with value embeddings
 UNEMBEDDING_LR = 0.004  # learning rate for lm_head (Adam)
 MATRIX_LR = 0.1          # increased from 0.08 for better convergence with matrix params
 SCALAR_LR = 0.5         # learning rate for per-layer scalars (Adam)
