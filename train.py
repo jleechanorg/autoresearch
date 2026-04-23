@@ -1,9 +1,3 @@
-"""
-Autoresearch pretraining script. Single-GPU, single-file.
-Cherry-picked and simplified from nanochat.
-Usage: uv run train.py
-"""
-
 import os
 os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
@@ -432,7 +426,7 @@ class MuonAdamW(torch.optim.Optimizer):
 # Model architecture
 ASPECT_RATIO = 80       # model_dim = depth * ASPECT_RATIO (increased from 64 for more heads)
 HEAD_DIM = 128          # target head dimension for attention
-WINDOW_PATTERN = "SL"   # alternating sliding window pattern: L=full, S=half context
+WINDOW_PATTERN = "SSSL"   # alternating sliding window pattern: L=full, S=half context
 
 # Optimization
 TOTAL_BATCH_SIZE = 2**18 # reduced to fit 24GB GPU (was 2**19)
