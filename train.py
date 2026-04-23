@@ -430,15 +430,15 @@ class MuonAdamW(torch.optim.Optimizer):
 # ---------------------------------------------------------------------------
 
 # Model architecture
-ASPECT_RATIO = 72       # model_dim = depth * ASPECT_RATIO (increased from 64 for more model capacity)
+ASPECT_RATIO = 80       # model_dim = depth * ASPECT_RATIO (increased from 72 for wider model = 5 heads instead of 4)
 HEAD_DIM = 128          # target head dimension for attention
 WINDOW_PATTERN = "SSLL" # sliding window pattern: L=full, S=half context
 
 # Optimization
 TOTAL_BATCH_SIZE = 2**18 # reduced to fit 24GB GPU (was 2**19)
-EMBEDDING_LR = 0.6       # reduced from 0.8 for better convergence stability
+EMBEDDING_LR = 0.8       # increased from 0.6 for better convergence with wider model
 UNEMBEDDING_LR = 0.004  # learning rate for lm_head (Adam)
-MATRIX_LR = 0.06         # increased from 0.05 for better convergence
+MATRIX_LR = 0.08         # increased from 0.06 for better convergence
 SCALAR_LR = 0.5         # learning rate for per-layer scalars (Adam)
 WEIGHT_DECAY = 0.2      # cautious weight decay for Muon
 ADAM_BETAS = (0.8, 0.95) # Adam beta1, beta2
