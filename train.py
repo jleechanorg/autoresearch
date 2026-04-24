@@ -1,3 +1,4 @@
+
 import os
 os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
@@ -424,17 +425,17 @@ class MuonAdamW(torch.optim.Optimizer):
 # ---------------------------------------------------------------------------
 
 # Model architecture
-ASPECT_RATIO = 48       # Reduced from 56 for better generalization (narrower model)
+ASPECT_RATIO = 56       # Increased from 48 for wider model (more expressive)
 HEAD_DIM = 128          # target head dimension for attention
 WINDOW_PATTERN = "SSSL"   # alternating sliding window pattern: L=full, S=half context
 
 # Optimization
 TOTAL_BATCH_SIZE = 2**18 # reduced to fit 24GB GPU (was 2**19)
-EMBEDDING_LR = 0.6       # increased from 0.5 for better convergence with value embeddings
+EMBEDDING_LR = 0.6       # learning rate for embeddings (Adam)
 UNEMBEDDING_LR = 0.004  # learning rate for lm_head (Adam)
-MATRIX_LR = 0.1          # increased from 0.08 for better convergence with matrix params
+MATRIX_LR = 0.12         # increased from 0.1 for better convergence with matrix params
 SCALAR_LR = 0.5         # learning rate for per-layer scalars (Adam)
-WEIGHT_DECAY = 0.15     # reduced from 0.2 for less aggressive regularization
+WEIGHT_DECAY = 0.15     # weight regularization
 ADAM_BETAS = (0.8, 0.95) # Adam beta1, beta2
 WARMUP_RATIO = 0.0      # fraction of time budget for LR warmup
 WARMDOWN_RATIO = 0.5    # fraction of time budget for LR warmdown
