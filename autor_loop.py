@@ -354,6 +354,10 @@ Output: ONLY the complete modified train.py file content. No explanations.
 
 def write_train_py(content: str) -> bool:
     """Write content to train.py only if it looks like valid Python and passes constraint checks."""
+    # Strip markdown fences first
+    content = re.sub(r'^\s*```[\w]*\s*', '', content, flags=re.MULTILINE)
+    content = re.sub(r'\s*```\s*$', '', content, flags=re.MULTILINE)
+    content = content.strip()
     if not content or len(content) < 500:
         log("ERROR: proposed train.py too short — rejecting")
         return False
@@ -381,6 +385,28 @@ def write_train_py(content: str) -> bool:
             return False
     if "torch.compile(" in content and "# model = torch.compile" not in content:
         log("ERROR: torch.compile not commented out — would OOM — rejecting")
+        return False
+    # Crash pattern detection
+    crash_patterns = [
+        (r"TOTAL_BATCH_SIZE\s*=\s*2\*\*19", "TOTAL_BATCH_SIZE=2**19 would OOM"),
+        (r"TOTAL_BATCH_SIZE\s*=\s*[5-9][0-9]{5,}", "TOTAL_BATCH_SIZE too large"),
+        (r"\bHEAD_DIM\s*=\s*2[5-9][6-9]\b|\bHEAD_DIM\s*=\s*[3-9][0-9]{2,}\b", "HEAD_DIM > 256 too large"),
+        (r"ASPECT_RATIO\s*=\s*(9[6-9]|[1-9][0-9]{2,})", "ASPECT_RATIO > 96 too large"),
+        (r"vocab_size\s*=\s*6[5-9]", "vocab_size > 64k may cause memory issues"),
+        (r"n_layer\s*=\s*(1[3-9]|[2-9][0-9])", "n_layer > 12 too deep for this GPU"),
+        (r"n_head\s*=\s*([2-9][0-9]|[1-9][0-9]{2,})", "n_head > 20 may OOM"),
+        (r"fa3\s*=\s*None", "fa3=None will cause AttributeError crash"),
+        (r'get_kernel\s*\(\s*["\'][^"\']+["\']\s*\)', "get_kernel with non-const arg may fail"),
+        (r"torch\.set_float32_matmul_precision\([^)]+,\s*['\"]width['\"]", "width-level matmul precision on wide models OOMs"),
+    ]
+    for pattern, reason in crash_patterns:
+        if re.search(pattern, content):
+            log(f"ERROR: crash pattern detected ({reason}) — rejecting")
+            return False
+    try:
+        compile(content, "train.py", "exec")
+    except SyntaxError as e:
+        log(f"ERROR: proposed train.py has syntax error {e.msg} at line {e.lineno} — rejecting")
         return False
     TRAIN_FILE.write_text(content)
     return True
