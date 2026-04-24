@@ -1,4 +1,3 @@
-
 import os
 os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
@@ -433,7 +432,7 @@ WINDOW_PATTERN = "SSSL"   # alternating sliding window pattern: L=full, S=half c
 TOTAL_BATCH_SIZE = 2**18 # reduced to fit 24GB GPU (was 2**19)
 EMBEDDING_LR = 0.6       # learning rate for embeddings (Adam)
 UNEMBEDDING_LR = 0.004  # learning rate for lm_head (Adam)
-MATRIX_LR = 0.12         # increased from 0.1 for better convergence with matrix params
+MATRIX_LR = 0.08         # reduced from 0.12 for better Muon convergence
 SCALAR_LR = 0.5         # learning rate for per-layer scalars (Adam)
 WEIGHT_DECAY = 0.15     # weight regularization
 ADAM_BETAS = (0.8, 0.95) # Adam beta1, beta2
